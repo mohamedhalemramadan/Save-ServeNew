@@ -9,11 +9,11 @@ using Persistance.Identity;
 
 #nullable disable
 
-namespace Persistance.Identity.migration
+namespace Persistance.Migrations
 {
     [DbContext(typeof(StoreIdentityContext))]
-    [Migration("20260407215313_UpdateUserEntity")]
-    partial class UpdateUserEntity
+    [Migration("20260413215828_InitialIdentityFix")]
+    partial class InitialIdentityFix
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -59,9 +59,31 @@ namespace Persistance.Identity.migration
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("Addresses", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.Category", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Category");
                 });
 
             modelBuilder.Entity("Domain.Entities.Charity", b =>
@@ -206,9 +228,40 @@ namespace Persistance.Identity.migration
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CategoryId");
+
                     b.HasIndex("RestaurantId");
 
                     b.ToTable("FoodItem");
+                });
+
+            modelBuilder.Entity("Domain.Entities.FoodOrder", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("FoodItemId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FoodItemId");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("FoodOrder");
                 });
 
             modelBuilder.Entity("Domain.Entities.Order", b =>
@@ -503,14 +556,29 @@ namespace Persistance.Identity.migration
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
+                    b.Property<string>("CuisineType")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("DisplayName")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Mission")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NationalId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OrganizationName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Phone")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("RegistrationNo")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Role")
                         .IsRequired()
@@ -522,14 +590,26 @@ namespace Persistance.Identity.migration
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
+                    b.Property<string>("VehicleNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("VehicleType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("WorkHours")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Zone")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasDiscriminator().HasValue("User");
                 });
 
             modelBuilder.Entity("Domain.Entities.Address", b =>
                 {
                     b.HasOne("Domain.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
+                        .WithOne("Address")
+                        .HasForeignKey("Domain.Entities.Address", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -571,11 +651,40 @@ namespace Persistance.Identity.migration
 
             modelBuilder.Entity("Domain.Entities.FoodItem", b =>
                 {
-                    b.HasOne("Domain.Entities.Restaurant", null)
+                    b.HasOne("Domain.Entities.Category", "Category")
+                        .WithMany("FoodItems")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Restaurant", "Restaurant")
                         .WithMany("FoodItems")
                         .HasForeignKey("RestaurantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Category");
+
+                    b.Navigation("Restaurant");
+                });
+
+            modelBuilder.Entity("Domain.Entities.FoodOrder", b =>
+                {
+                    b.HasOne("Domain.Entities.FoodItem", "FoodItem")
+                        .WithMany("FoodOrders")
+                        .HasForeignKey("FoodItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Order", "Order")
+                        .WithMany()
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("FoodItem");
+
+                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("Domain.Entities.Order", b =>
@@ -653,6 +762,11 @@ namespace Persistance.Identity.migration
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Domain.Entities.Category", b =>
+                {
+                    b.Navigation("FoodItems");
+                });
+
             modelBuilder.Entity("Domain.Entities.Charity", b =>
                 {
                     b.Navigation("Orders");
@@ -663,6 +777,11 @@ namespace Persistance.Identity.migration
                     b.Navigation("Orders");
                 });
 
+            modelBuilder.Entity("Domain.Entities.FoodItem", b =>
+                {
+                    b.Navigation("FoodOrders");
+                });
+
             modelBuilder.Entity("Domain.Entities.Restaurant", b =>
                 {
                     b.Navigation("FoodItems");
@@ -670,6 +789,9 @@ namespace Persistance.Identity.migration
 
             modelBuilder.Entity("Domain.Entities.User", b =>
                 {
+                    b.Navigation("Address")
+                        .IsRequired();
+
                     b.Navigation("Charity")
                         .IsRequired();
 
