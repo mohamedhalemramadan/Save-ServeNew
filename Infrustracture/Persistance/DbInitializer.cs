@@ -28,71 +28,39 @@ namespace Persistance
 
         public async Task InitializeAsync()
         {
-            // الأسطر دي بتجبر الـ Entity Framework إنه يخلّق الجداول فوراً لو مش موجودة
-            // وده اللي هيمنع الـ Error بتاع 'Invalid object name AspNetRoles'
-            await _identityContext.Database.EnsureCreatedAsync();
-            await _storeDBContext.Database.EnsureCreatedAsync();
+            await _identityContext.Database.MigrateAsync();
+            await _storeDBContext.Database.MigrateAsync();
+        }
 
-            if ((await _storeDBContext.Database.GetPendingMigrationsAsync()).Any())
-                await _storeDBContext.Database.MigrateAsync();
+        private async Task SeedRolesAsync()
+        {
+            string[] roles = { "Admin", "Restaurant", "Consumer", "Charity" };
 
-            if ((await _identityContext.Database.GetPendingMigrationsAsync()).Any())
-                await _identityContext.Database.MigrateAsync();
+            foreach (var role in roles)
+            {
+                if (!await _roleManager.RoleExistsAsync(role))
+                {
+                    await _roleManager.CreateAsync(new IdentityRole(role));
+                }
+            }
         }
 
         public async Task InitializeIdentityAsync()
         {
-            // Seed Default Roles
-            if (!_roleManager.Roles.Any())
-            {
-                await _roleManager.CreateAsync(new IdentityRole("Admin"));
-                await _roleManager.CreateAsync(new IdentityRole("Restaurant"));
-                await _roleManager.CreateAsync(new IdentityRole("Consumer"));
-                await _roleManager.CreateAsync(new IdentityRole("Charity"));
-            }
+            await SeedRolesAsync();
 
-            // Seed Default Users
-            if (!_userManager.Users.Any())
+            if (!await _userManager.Users.AnyAsync())
             {
-                var AdminUser = new User
+                var admin = new User
                 {
                     DisplayName = "AdminUser",
                     Email = "AdminUser@gmail.com",
-                    UserName = "AdminUser",
+                    UserName = "AdminUser"
                 };
 
-                var RestaurantUser = new User
-                {
-                    DisplayName = "RestaurantUser",
-                    Email = "RestaurantUser@gmail.com",
-                    UserName = "RestaurantUser",
-                };
+                await _userManager.CreateAsync(admin, "Passw0rd@123");
 
-                var ConsumerUser = new User
-                {
-                    DisplayName = "ConsumerUser",
-                    Email = "ConsumerUser@gmail.com",
-                    UserName = "ConsumerUser",
-                };
-
-                var CharityUser = new User
-                {
-                    DisplayName = "CharityUser",
-                    Email = "CharityUser@gmail.com",
-                    UserName = "CharityUser",
-                };
-
-                // إنشاء المستخدمين بكلمة سر موحدة
-                await _userManager.CreateAsync(AdminUser, "Passw0rd@123");
-                await _userManager.CreateAsync(RestaurantUser, "Passw0rd@123");
-                await _userManager.CreateAsync(ConsumerUser, "Passw0rd@123");
-                await _userManager.CreateAsync(CharityUser, "Passw0rd@123");
-
-                // ربط المستخدمين بالأدوار الخاصة بهم
-                await _userManager.AddToRoleAsync(AdminUser, "Admin");
-                await _userManager.AddToRoleAsync(RestaurantUser, "Restaurant");
-                await _userManager.AddToRoleAsync(ConsumerUser, "Consumer");
-                await _userManager.AddToRoleAsync(CharityUser, "Charity");
+                await _userManager.AddToRoleAsync(admin, "Admin");
             }
         }
     }

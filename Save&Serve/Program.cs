@@ -98,18 +98,10 @@ namespace Save_Serve
             // 7. Auto-Migration & Seeding
             using (var scope = app.Services.CreateScope())
             {
-                var services = scope.ServiceProvider;
-                try
-                {
-                    var initializer = services.GetRequiredService<IDbInitializer>();
-                    await initializer.InitializeAsync();
-                    await initializer.InitializeIdentityAsync();
-                }
-                catch (Exception ex)
-                {
-                    var logger = services.GetRequiredService<ILogger<Program>>();
-                    logger.LogError(ex, "Error occurred during Seeding.");
-                }
+                var initializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+
+                await initializer.InitializeAsync();
+                await initializer.InitializeIdentityAsync();
             }
 
             // 8. Middleware Pipeline
@@ -120,7 +112,6 @@ namespace Save_Serve
             }
 
             app.UseHttpsRedirection();
-            app.UseRouting();
             app.UseCors("AllowFrontend"); // تفعيل سياسة الـ CORS الديناميكية
             app.UseAuthentication();
             app.UseAuthorization();
