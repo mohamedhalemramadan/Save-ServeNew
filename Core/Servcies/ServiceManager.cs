@@ -1,11 +1,11 @@
 ﻿using Domain.Contracts;
-using Domain.Contracts.Domain.Contracts;
 using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
-using Servcies;
 using Servcies.Abstractions;
 using Services;
 using Services.Abstractions;
+
+namespace Servcies;
 
 public class ServiceManager : IServiceManager
 {

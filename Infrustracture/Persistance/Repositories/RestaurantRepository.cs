@@ -1,13 +1,7 @@
 ﻿using Domain.Contracts;
-using Domain.Contracts.Domain.Contracts;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Persistance.Dates;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Persistance.Repositories
 {
