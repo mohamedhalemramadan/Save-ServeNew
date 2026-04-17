@@ -52,6 +52,7 @@ namespace Services
                 VehicleNumber = registerDto.VehicleNumber,
                 Zone = registerDto.Zone ,
                 WorkHours = registerDto.WorkHours ,
+                AddressText = registerDto.Address,
                 RegistrationNo = registerDto.RegistrationNo,
                 OrganizationName = registerDto.OrganizationName ,
                 Mission = registerDto.Mission ,
