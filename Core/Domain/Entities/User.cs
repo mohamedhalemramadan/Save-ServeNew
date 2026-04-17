@@ -8,13 +8,13 @@ public class User : IdentityUser
     public string Role { get; set; } = string.Empty;
 
     // ✅ Optional fields - nullable
-    public string? Phone { get; set; }
-    public string? Status { get; set; }
-    public string? AddressText { get; set; }
+   
+    public string? AddressText { get; set; } 
+    public string? Zone { get; set; }
     public string? NationalId { get; set; }
     public string? VehicleType { get; set; }
     public string? VehicleNumber { get; set; }
-    public string? Zone { get; set; }
+  
     public string? WorkHours { get; set; }
     public string? RegistrationNo { get; set; }
     public string? OrganizationName { get; set; }
