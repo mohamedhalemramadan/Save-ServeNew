@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Presentaion
 {
     [ApiController]
-    [Route("api/[controller]")]
+    
     
     public class ApiController : ControllerBase
     {

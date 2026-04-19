@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shared
+namespace Shared.AuthenticationDtos
 {
     public record UserRegisterDto
     {
@@ -19,8 +19,8 @@ namespace Shared
         public string Role { get; init; }
 
         // ✅ Nullable fields
-        public string? NationalId { get; init; }       
-        
+        public string? NationalId { get; init; }
+
         public string? VehicleType { get; init; }
         public string? VehicleNumber { get; init; }
 
@@ -28,7 +28,7 @@ namespace Shared
         public string? RegistrationNo { get; init; }
         public string? OrganizationName { get; init; }
         public string? Mission { get; init; }
-        public string? CuisineType { get; init ; }
+        public string? CuisineType { get; init; }
 
     }
 }

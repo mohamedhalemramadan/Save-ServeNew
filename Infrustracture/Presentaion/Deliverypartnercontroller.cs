@@ -1,60 +1,70 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Abstractions;
-using Shared.Consumer;
+using Shared.Delivery;
 using System.Security.Claims;
 
 namespace Presentaion;
-[ApiController]
+
 [Route("api/[controller]")]
-public class ConsumerController : ApiController
+[ApiController]
+public class DeliveryPartnerController : ApiController
 {
     private readonly IServiceManager _serviceManager;
 
-    public ConsumerController(IServiceManager serviceManager)
+    public DeliveryPartnerController(IServiceManager serviceManager)
         => _serviceManager = serviceManager;
 
-    // GET /api/consumer
+    // GET /api/deliverypartner
     [HttpGet]
-    [Authorize(Roles="Admin")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> GetAll()
     {
-        var result = await _serviceManager.ConsumerService.GetAllAsync();
+        var result = await _serviceManager.DeliveryPartnerService.GetAllAsync();
         return Ok(new { success = true, data = result });
     }
 
-    // GET /api/consumer/{id}
+    // GET /api/deliverypartner/{id}
     [HttpGet("{id}")]
     [Authorize]
     public async Task<IActionResult> GetById(int id)
     {
-        var result = await _serviceManager.ConsumerService.GetByIdAsync(id);
+        var result = await _serviceManager.DeliveryPartnerService.GetByIdAsync(id);
         return result is null
-            ? NotFound(new { success = false, message = "Consumer not found" })
+            ? NotFound(new { success = false, message = "Delivery partner not found" })
             : Ok(new { success = true, data = result });
     }
 
-    // GET /api/consumer/my-profile
+    // GET /api/deliverypartner/my-profile
     [HttpGet("my-profile")]
-    [Authorize(Roles = "Consumer")]
+    [Authorize(Roles = "DeliveryPartner")]
     public async Task<IActionResult> GetMyProfile()
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
-        var result = await _serviceManager.ConsumerService.GetByUserIdAsync(userId);
+        var result = await _serviceManager.DeliveryPartnerService.GetByUserIdAsync(userId);
         return result is null
             ? NotFound(new { success = false, message = "Profile not found" })
             : Ok(new { success = true, data = result });
     }
 
-    // POST /api/consumer
+    // GET /api/deliverypartner/available
+    [HttpGet("available")]
+    [Authorize(Roles = "Admin,Restaurant")]
+    public async Task<IActionResult> GetAvailable()
+    {
+        var result = await _serviceManager.DeliveryPartnerService.GetAvailableAsync();
+        return Ok(new { success = true, data = result });
+    }
+
+    // POST /api/deliverypartner
     [HttpPost]
-    [Authorize(Roles = "Consumer,Admin")] // ✅ Admin كمان يقدر يعمل
-    public async Task<IActionResult> Create([FromBody] CreateConsumerDto dto)
+    [Authorize(Roles = "DeliveryPartner")]
+    public async Task<IActionResult> Create([FromBody] CreateDeliveryPartnerDto dto)
     {
         try
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
-            var result = await _serviceManager.ConsumerService.CreateAsync(dto, userId);
+            var result = await _serviceManager.DeliveryPartnerService.CreateAsync(dto, userId);
             return CreatedAtAction(nameof(GetById), new { id = result.Id },
                 new { success = true, data = result });
         }
@@ -64,14 +74,14 @@ public class ConsumerController : ApiController
         }
     }
 
-    // PUT /api/consumer/{id}
+    // PUT /api/deliverypartner/{id}
     [HttpPut("{id}")]
-    [Authorize(Roles = "Consumer,Admin")]
-    public async Task<IActionResult> Update(int id, [FromBody] UpdateConsumerDto dto)
+    [Authorize(Roles = "DeliveryPartner")]
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateDeliveryPartnerDto dto)
     {
         try
         {
-            var result = await _serviceManager.ConsumerService.UpdateAsync(id, dto);
+            var result = await _serviceManager.DeliveryPartnerService.UpdateAsync(id, dto);
             return Ok(new { success = true, data = result });
         }
         catch (KeyNotFoundException ex)
@@ -80,15 +90,15 @@ public class ConsumerController : ApiController
         }
     }
 
-    // DELETE /api/consumer/{id}
+    // DELETE /api/deliverypartner/{id}
     [HttpDelete("{id}")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Delete(int id)
     {
         try
         {
-            await _serviceManager.ConsumerService.DeleteAsync(id);
-            return Ok(new { success = true, message = "Consumer deleted" });
+            await _serviceManager.DeliveryPartnerService.DeleteAsync(id);
+            return Ok(new { success = true, message = "Delivery partner deleted" });
         }
         catch (KeyNotFoundException ex)
         {

@@ -22,9 +22,9 @@ public class User : IdentityUser
     public string? CuisineType { get; set; }
 
     // Navigation
-    public Address? Address { get; set; }
-    public Restaurant? Restaurant { get; set; }
-    public Charity? Charity { get; set; }
-    public Consumer? Consumer { get; set; }
-    public DeliveryPartner? DeliveryPartner { get; set; }
+    //public Address? Address { get; set; }
+    //public Restaurant? Restaurant { get; set; }
+    //public Charity? Charity { get; set; }
+    //public Consumer? Consumer { get; set; }
+    //public DeliveryPartner? DeliveryPartner { get; set; }
 }

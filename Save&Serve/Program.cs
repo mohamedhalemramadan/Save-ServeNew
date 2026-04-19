@@ -3,6 +3,7 @@ using Domain.Entities;
 using E_Commerce.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
+using Persistance;
 using Persistance.Repositories;
 using Persistance.Services;
 using Presentaion;
@@ -17,56 +18,61 @@ public class Program
 {
     public static async Task Main(string[] args)
     {
+        System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
         var builder = WebApplication.CreateBuilder(args);
 
-        // ── 1. Infrastructure (DB + Identity + JWT Auth) ──────────────────
+        // 1. Infrastructure (DB + Identity + JWT)
         builder.Services.AddInfraStructureServices(builder.Configuration);
 
-        // ── 2. Repositories ───────────────────────────────────────────────
+        // 2. Repositories
         builder.Services.AddScoped<IRestaurantRepository, RestaurantRepository>();
         builder.Services.AddScoped<IConsumerRepository, ConsumerRepository>();
+        builder.Services.AddScoped<ICharityRepository, CharityRepository>();
+        builder.Services.AddScoped<IDeliveryPartnerRepository, DeliveryPartnerRepository>();
+        builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 
-        // ── 3. Services ───────────────────────────────────────────────────
+        // 3. Services
         builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
         builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
         builder.Services.AddScoped<IConsumerService, ConsumerService>();
         builder.Services.AddScoped<IRestaurantService, RestaurantService>();
+        builder.Services.AddScoped<ICharityService, CharityService>();
+        builder.Services.AddScoped<IDeliveryPartnerService, DeliveryPartnerService>();
+        builder.Services.AddScoped<IPaymentService, PaymentService>();
         builder.Services.AddScoped<IServiceManager, ServiceManager>();
         builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
-        // ── 4. Controllers ────────────────────────────────────────────────
+        // 4. Controllers
         builder.Services.AddControllers()
-            .AddApplicationPart(typeof(AssemblyReference).Assembly);
+      .AddApplicationPart(typeof(Presentaion.AssemblyReference).Assembly);
 
-        // ── 5. CORS ───────────────────────────────────────────────────────
+
+
+        // 5. CORS - يقبل أي origin عشان الـ Frontend
         builder.Services.AddCors(options =>
-        {
             options.AddPolicy("AllowFrontend", policy =>
                 policy.SetIsOriginAllowed(_ => true)
                       .AllowAnyMethod()
                       .AllowAnyHeader()
-                      .AllowCredentials());
-        });
+                      .AllowCredentials()));
 
-        // ── 6. Swagger with JWT support ───────────────────────────────────
+        // 6. Swagger + JWT Button
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(c =>
         {
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "Save & Serve API", Version = "v1" });
             c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
-                Description = "Enter: Bearer {your token}",
+                Description = "Enter: Bearer {your_token}",
                 Name = "Authorization",
                 In = ParameterLocation.Header,
-                Type = SecuritySchemeType.ApiKey,
+                Type = SecuritySchemeType.Http,
                 Scheme = "Bearer"
             });
-            c.AddSecurityRequirement(new OpenApiSecurityRequirement
-            {{
-                new OpenApiSecurityScheme
-                {
-                    Reference = new OpenApiReference
-                    {
+            c.AddSecurityRequirement(new OpenApiSecurityRequirement {{
+                new OpenApiSecurityScheme {
+                    Reference = new OpenApiReference {
                         Type = ReferenceType.SecurityScheme,
                         Id   = "Bearer"
                     }
@@ -77,19 +83,21 @@ public class Program
 
         var app = builder.Build();
 
-        // ── 7. Seed DB ────────────────────────────────────────────────────
+        // 7. Seed Database
         await app.SeedDbAsync();
 
-        // ── 8. Middleware Pipeline ─────────────────────────────────────────
+        // 8. Middleware Pipeline
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
             app.UseSwaggerUI();
         }
 
-        app.UseHttpsRedirection();
+        
+     
+
         app.UseCors("AllowFrontend");
-        app.UseAuthentication(); 
+        app.UseAuthentication();  
         app.UseAuthorization();
         app.MapControllers();
         app.Run();

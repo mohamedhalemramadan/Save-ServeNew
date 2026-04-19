@@ -5,7 +5,7 @@
 namespace Persistance.Migrations
 {
     /// <inheritdoc />
-    public partial class InitIdentity : Migration
+    public partial class FixRestaurantUserId : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

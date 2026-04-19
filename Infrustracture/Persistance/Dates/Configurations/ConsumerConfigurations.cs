@@ -16,10 +16,10 @@ public class ConsumerConfigurations : IEntityTypeConfiguration<Consumer>
         builder.Property(c => c.PreferredPaymentMethod).HasMaxLength(50);
         builder.Property(c => c.UserId).IsRequired();
 
-        builder.HasOne(c => c.User)
-            .WithOne(u => u.Consumer)
-            .HasForeignKey<Consumer>(c => c.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
+        //builder.HasOne(c => c.User)
+        //    .WithOne(u => u.Consumer)
+        //    .HasForeignKey<Consumer>(c => c.UserId)
+        //    .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasMany(c => c.Orders)
             .WithOne(o => o.Consumer)

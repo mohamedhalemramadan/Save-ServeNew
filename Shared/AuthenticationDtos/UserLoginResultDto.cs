@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shared
+namespace Shared.AuthenticationDtos
 {
-    public record UserLoginResultDto(string DisplayName, string Email, string Token, string role )
+    public record UserLoginResultDto(string DisplayName, string Email, string Token, string role)
     {
     }
 }

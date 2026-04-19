@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Services.Abstractions;
-using Shared;
+using Shared.AuthenticationDtos;
 
 namespace Presentaion
 {

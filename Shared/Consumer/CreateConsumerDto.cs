@@ -10,7 +10,7 @@ namespace Shared.Consumer
     public record CreateConsumerDto
     {
 
-        public string UserID { get; init; }
+        public string Name { get; init; }
         [Required]
         [Range(18, 120)]
         public int Age { get; init; }
