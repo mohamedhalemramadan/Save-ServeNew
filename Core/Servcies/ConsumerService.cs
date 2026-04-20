@@ -79,7 +79,7 @@ public class ConsumerService : IConsumerService
     private static ConsumerDto MapToDto(Consumer c) => new()
     {
         Id = c.Id,
-        Name = c.User?.DisplayName ?? "N/A",
+        //Name = c.User?.DisplayName ?? "N/A",
         Age = c.Age,
         Gender = c.Gender,
         PreferredPaymentMethod = c.PreferredPaymentMethod

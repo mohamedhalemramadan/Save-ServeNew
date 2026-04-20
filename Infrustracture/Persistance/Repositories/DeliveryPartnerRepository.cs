@@ -13,12 +13,12 @@ public class DeliveryPartnerRepository : GenericRepository<DeliveryPartner, int>
 
     public async Task<DeliveryPartner?> GetByUserIdAsync(string userId)
         => await _db.DeliveryPartners
-            .Include(d => d.User)
+            //.Include(d => d.User)
             .FirstOrDefaultAsync(d => d.UserId == userId);
 
     public async Task<IEnumerable<DeliveryPartner>> GetAvailableAsync()
         => await _db.DeliveryPartners
             .Where(d => d.AvailabilityStatus == "Available")
-            .Include(d => d.User)
+            //.Include(d => d.User)
             .ToListAsync();
 }

@@ -16,6 +16,6 @@ namespace Domain.Entities
         public decimal Rating { get; set; }
 
         // Navigation
-        public User User { get; set; }
+        //public User User { get; set; }
     }
 }

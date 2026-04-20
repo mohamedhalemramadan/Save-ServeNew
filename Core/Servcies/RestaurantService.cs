@@ -91,7 +91,7 @@ public class RestaurantService : IRestaurantService
     private static RestaurantDto MapToDto(Restaurant r) => new()
     {
         Id = r.Id,
-        Name = r.User?.DisplayName ?? "N/A",
+        //Name = r.User?.DisplayName ?? "N/A",
         OpeningHours = r.OpeningHours,
         ClosingHours = r.ClosingHours,
         Type = r.Type,

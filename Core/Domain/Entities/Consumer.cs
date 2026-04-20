@@ -12,7 +12,7 @@ namespace Domain.Entities
         public string PreferredPaymentMethod  { get; set; }
         public string UserId { get; set; }
 
-        public User User { get; set; }
+        //public User User { get; set; }
         public ICollection<Order> Orders { get; set; }
         public string Gender { get; set; }
     }

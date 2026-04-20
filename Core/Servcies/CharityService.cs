@@ -85,7 +85,6 @@ public class CharityService : ICharityService
     private static CharityDto MapToDto(Charity c) => new()
     {
         Id = c.Id,
-        Name = c.User?.DisplayName ?? "N/A",
         CoverageArea = c.CoverageArea,
         RegistrationNo = c.RegistrationNo,
         Mission = c.Mission

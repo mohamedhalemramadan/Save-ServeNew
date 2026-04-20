@@ -15,7 +15,7 @@ namespace Domain.Entities
         public string Mission { get; set; }
 
      
-        public User User { get; set; }
+        //public User User { get; set; }
         public ICollection<Order> Orders { get; set; }
     }
 }

@@ -13,12 +13,12 @@ public class CharityRepository : GenericRepository<Charity, int>, ICharityReposi
 
     public async Task<Charity?> GetByUserIdAsync(string userId)
         => await _db.Charities
-            .Include(c => c.User)
+            //.Include(c => c.User)
             .FirstOrDefaultAsync(c => c.UserId == userId);
 
     public async Task<IEnumerable<Charity>> GetByCoverageAreaAsync(string area)
         => await _db.Charities
             .Where(c => c.CoverageArea.Contains(area))
-            .Include(c => c.User)
+            //.Include(c => c.User)
             .ToListAsync();
 }

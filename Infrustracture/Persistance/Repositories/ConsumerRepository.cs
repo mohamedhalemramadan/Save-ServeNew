@@ -23,7 +23,7 @@ namespace Persistance.Repositories
         public async Task<Consumer?> GetByUserIdAsync(string userId)
         {
             return await _storeDBContext.Consumers
-                .Include(c => c.User)
+                //.Include(c => c.User)
                 .Include(c => c.Orders)
                 .FirstOrDefaultAsync(c => c.UserId == userId);
         }
@@ -32,7 +32,7 @@ namespace Persistance.Repositories
         {
             return await _storeDBContext.Consumers
                 .Where(c => c.Gender == gender)
-                .Include(c => c.User)
+                //.Include(c => c.User)
                 .ToListAsync();
         }
 
@@ -40,7 +40,7 @@ namespace Persistance.Repositories
         {
             return await _storeDBContext.Consumers
                 .Where(c => c.Age >= minAge && c.Age <= maxAge)
-                .Include(c => c.User)
+                //.Include(c => c.User)
                 .ToListAsync();
         }
     }

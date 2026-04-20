@@ -26,49 +26,12 @@ namespace Persistance.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "User",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    DisplayName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Role = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AddressText = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Zone = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NationalId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    VehicleType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    VehicleNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    WorkHours = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    RegistrationNo = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    OrganizationName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Mission = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CuisineType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NormalizedUserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NormalizedEmail = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_User", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Charity",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CoverageArea = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     RegistrationNo = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Mission = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false)
@@ -76,12 +39,6 @@ namespace Persistance.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Charity", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Charity_User_UserId",
-                        column: x => x.UserId,
-                        principalTable: "User",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -92,18 +49,12 @@ namespace Persistance.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Age = table.Column<int>(type: "int", nullable: false),
                     PreferredPaymentMethod = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Gender = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Consumer", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Consumer_User_UserId",
-                        column: x => x.UserId,
-                        principalTable: "User",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -112,7 +63,7 @@ namespace Persistance.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AvailabilityStatus = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false, defaultValue: "Available"),
                     VehicleType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     VehicleNo = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
@@ -122,12 +73,6 @@ namespace Persistance.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_DeliveryPartner", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_DeliveryPartner_User_UserId",
-                        column: x => x.UserId,
-                        principalTable: "User",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -140,17 +85,11 @@ namespace Persistance.Migrations
                     ClosingHours = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Type = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Rating = table.Column<decimal>(type: "decimal(3,2)", nullable: false, defaultValue: 0m),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Restaurants", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Restaurants_User_UserId",
-                        column: x => x.UserId,
-                        principalTable: "User",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -165,7 +104,7 @@ namespace Persistance.Migrations
                     DeliveryAddress = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
                     Status = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false, defaultValue: "Pending"),
                     Type = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()")
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -267,21 +206,6 @@ namespace Persistance.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Charity_UserId",
-                table: "Charity",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Consumer_UserId",
-                table: "Consumer",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DeliveryPartner_UserId",
-                table: "DeliveryPartner",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_FoodItems_CategoryId",
                 table: "FoodItems",
                 column: "CategoryId");
@@ -316,11 +240,6 @@ namespace Persistance.Migrations
                 table: "Payment",
                 column: "OrderId",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Restaurants_UserId",
-                table: "Restaurants",
-                column: "UserId");
         }
 
         /// <inheritdoc />
@@ -352,9 +271,6 @@ namespace Persistance.Migrations
 
             migrationBuilder.DropTable(
                 name: "Consumer");
-
-            migrationBuilder.DropTable(
-                name: "User");
         }
     }
 }

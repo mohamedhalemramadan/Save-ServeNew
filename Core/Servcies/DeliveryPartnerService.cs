@@ -88,7 +88,7 @@ public class DeliveryPartnerService : IDeliveryPartnerService
     private static DeliveryPartnerDto MapToDto(DeliveryPartner d) => new()
     {
         Id = d.Id,
-        Name = d.User?.DisplayName ?? "N/A",
+        //Name = d.User?.DisplayName ?? "N/A",
         AvailabilityStatus = d.AvailabilityStatus,
         VehicleType = d.VehicleType,
         VehicleNo = d.VehicleNo,

@@ -17,7 +17,7 @@ namespace Persistance.Repositories
         public async Task<Restaurant?> GetByUserIdAsync(string userId)
         {
             return await _storeDBContext.Restaurants
-                .Include(r => r.User)
+                //.Include(r => r.User)
                 .Include(r => r.FoodItems)
                 .FirstOrDefaultAsync(r => r.UserId == userId);
         }
@@ -26,7 +26,7 @@ namespace Persistance.Repositories
         {
             return await _storeDBContext.Restaurants
                 .Where(r => r.Type == type)
-                .Include(r => r.User)
+                //.Include(r => r.User)
                 .ToListAsync();
         }
 
@@ -35,7 +35,7 @@ namespace Persistance.Repositories
             return await _storeDBContext.Restaurants
                 .OrderByDescending(r => r.Rating)
                 .Take(count)
-                .Include(r => r.User)
+                //.Include(r => r.User)
                 .ToListAsync();
         }
     }
