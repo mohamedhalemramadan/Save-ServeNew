@@ -41,7 +41,7 @@ public class AuthenticationService : IAuthenticationService
             DisplayName = dto.DisplayName,
             PhoneNumber = dto.PhoneNumber,
             Role = dto.Role,
-            AddressText = dto.Address,      // ✅ مش null
+            AddressText = dto.Address,      
             NationalId = dto.NationalId,
             VehicleType = dto.VehicleType,
             VehicleNumber = dto.VehicleNumber,
@@ -85,5 +85,18 @@ public class AuthenticationService : IAuthenticationService
         var result = await _userManager.ResetPasswordAsync(user, dto.Token, dto.NewPassword);
         if (!result.Succeeded)
             throw new Exception(string.Join(", ", result.Errors.Select(e => e.Description)));
+    }
+    public async Task RegisterRestaurant(UserRegisterDto dto)
+    {
+        var user = new User { UserName = dto.Email, Email = dto.Email, DisplayName = dto.DisplayName };
+
+        
+        var result = await _userManager.CreateAsync(user, dto.Password);
+
+        if (result.Succeeded)
+        {
+            
+            await _userManager.AddToRoleAsync(user, "Restaurant");
+        }
     }
 }

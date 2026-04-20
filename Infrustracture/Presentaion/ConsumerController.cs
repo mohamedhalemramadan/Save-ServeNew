@@ -16,7 +16,7 @@ public class ConsumerController : ApiController
 
     // GET /api/consumer
     [HttpGet]
-    [Authorize(Roles="Admin")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> GetAll()
     {
         var result = await _serviceManager.ConsumerService.GetAllAsync();

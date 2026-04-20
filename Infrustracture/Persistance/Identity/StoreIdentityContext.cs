@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Persistance.Identity
 {
-    public class StoreIdentityContext(DbContextOptions<StoreIdentityContext> options) : IdentityDbContext(options)
+    public class StoreIdentityContext(DbContextOptions<StoreIdentityContext> options) : IdentityDbContext<User>(options)
     {
         protected override void OnModelCreating(ModelBuilder builder)
         {

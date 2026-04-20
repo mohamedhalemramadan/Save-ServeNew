@@ -1,8 +1,6 @@
 ﻿using Domain.Entities;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
-namespace Persistance.Dates.Configurations;
+using Microsoft.EntityFrameworkCore;
 
 public class RestrauntConfiguration : IEntityTypeConfiguration<Restaurant>
 {
@@ -17,9 +15,10 @@ public class RestrauntConfiguration : IEntityTypeConfiguration<Restaurant>
         builder.Property(r => r.ClosingHours).HasMaxLength(100);
         builder.Property(r => r.Rating).HasColumnType("decimal(3,2)").HasDefaultValue(0);
 
-        //builder.HasOne(r => r.User)
-        //       .WithOne(u => u.Restaurant)
-        //       .HasForeignKey<Restaurant>(r => r.UserId)
-        //       .OnDelete(DeleteBehavior.Cascade);
+       
+        builder.HasOne(r => r.User)
+               .WithOne(u => u.Restaurant)
+               .HasForeignKey<Restaurant>(r => r.UserId)
+               .OnDelete(DeleteBehavior.Cascade);
     }
 }

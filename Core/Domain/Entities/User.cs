@@ -21,6 +21,7 @@ public class User : IdentityUser
     public string? Mission { get; set; }
     public string? CuisineType { get; set; }
 
+
     // Navigation
     //public Address? Address { get; set; }
     //public Restaurant? Restaurant { get; set; }

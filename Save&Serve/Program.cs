@@ -2,6 +2,7 @@
 using Domain.Entities;
 using E_Commerce.Extensions;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer; 
 using Microsoft.OpenApi.Models;
 using Persistance;
 using Persistance.Repositories;
@@ -25,6 +26,14 @@ public class Program
         // 1. Infrastructure (DB + Identity + JWT)
         builder.Services.AddInfraStructureServices(builder.Configuration);
 
+       
+        builder.Services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        });
+
         // 2. Repositories
         builder.Services.AddScoped<IRestaurantRepository, RestaurantRepository>();
         builder.Services.AddScoped<IConsumerRepository, ConsumerRepository>();
@@ -46,8 +55,6 @@ public class Program
         // 4. Controllers
         builder.Services.AddControllers()
       .AddApplicationPart(typeof(Presentaion.AssemblyReference).Assembly);
-
-
 
         // 5. CORS - يقبل أي origin عشان الـ Frontend
         builder.Services.AddCors(options =>
@@ -83,8 +90,29 @@ public class Program
 
         var app = builder.Build();
 
-        // 7. Seed Database
-        await app.SeedDbAsync();
+        // 7. Seed Database (Identity Roles + Default Data)
+        using (var scope = app.Services.CreateScope())
+        {
+            var services = scope.ServiceProvider;
+            try
+            {
+                var initializer = services.GetRequiredService<IDbInitializer>();
+
+               
+                await initializer.InitializeAsync();
+
+                
+                await initializer.InitializeIdentityAsync();
+
+                
+                // await app.SeedDbAsync(); 
+            }
+            catch (Exception ex)
+            {
+                var logger = services.GetRequiredService<ILogger<Program>>();
+                logger.LogError(ex, "An error occurred while seeding the database.");
+            }
+        }
 
         // 8. Middleware Pipeline
         if (app.Environment.IsDevelopment())
@@ -94,12 +122,13 @@ public class Program
         }
 
         
-     
+        app.UseRouting();
 
         app.UseCors("AllowFrontend");
-        app.UseAuthentication();  
+        app.UseAuthentication();
         app.UseAuthorization();
         app.MapControllers();
+
         app.Run();
     }
 }

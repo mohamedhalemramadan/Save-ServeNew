@@ -4,6 +4,7 @@ using Services.Abstractions;
 using Shared.Restaurant;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
@@ -87,23 +88,32 @@ namespace Presentaion
             }
         }
 
-        // POST: api/restaurant
         [HttpPost]
         [Authorize(Roles = "Restaurant")]
         public async Task<IActionResult> Create([FromBody] CreateRestaurantDto dto)
         {
+           
+            var userId = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value
+                         ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized(new { success = false, message = "User ID not found in token. Please login again." });
+            }
+
             try
             {
-                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 var restaurant = await _serviceManager.RestaurantService.CreateAsync(dto, userId);
-                return CreatedAtAction(nameof(GetById), new { id = restaurant.Id },
-                    new { success = true, data = restaurant });
+                return CreatedAtAction(nameof(GetById), new { id = restaurant.Id }, new { success = true, data = restaurant });
             }
             catch (Exception ex)
             {
-                return BadRequest(new { success = false, message = ex.Message });
+               
+                var message = ex.InnerException?.Message ?? ex.Message;
+                return BadRequest(new { success = false, message = message });
             }
         }
+        
 
         // PUT: api/restaurant/5
         [HttpPut("{id}")]

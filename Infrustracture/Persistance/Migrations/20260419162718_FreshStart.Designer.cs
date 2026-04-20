@@ -12,8 +12,8 @@ using Persistance.Dates;
 namespace Persistance.Migrations
 {
     [DbContext(typeof(StoreDBContext))]
-    [Migration("20260419111154_FixedSchema")]
-    partial class FixedSchema
+    [Migration("20260419162718_FreshStart")]
+    partial class FreshStart
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

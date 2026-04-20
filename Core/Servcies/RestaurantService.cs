@@ -45,11 +45,11 @@ public class RestaurantService : IRestaurantService
     {
         var existing = await _restaurantRepository.GetByUserIdAsync(userId);
         if (existing is not null)
-            throw new InvalidOperationException("User already has a restaurant");
+            throw new InvalidOperationException("User already has a restaurant registered.");
 
         var restaurant = new Restaurant
         {
-            UserId = userId,
+            UserId = userId, 
             OpeningHours = dto.OpeningHours,
             ClosingHours = dto.ClosingHours,
             Type = dto.Type,
@@ -58,8 +58,10 @@ public class RestaurantService : IRestaurantService
 
         await _restaurantRepository.AddAsync(restaurant);
         await _unitOfWork.SaveChangesAsync();
+
         return MapToDto(restaurant);
     }
+   
 
     public async Task<RestaurantDto> UpdateAsync(int id, UpdateRestaurantDto dto)
     {
