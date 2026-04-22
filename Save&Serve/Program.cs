@@ -40,6 +40,8 @@ public class Program
         builder.Services.AddScoped<ICharityRepository, CharityRepository>();
         builder.Services.AddScoped<IDeliveryPartnerRepository, DeliveryPartnerRepository>();
         builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+        builder.Services.AddScoped<IFoodItemRepository ,FoodItemRepository>();
+        builder.Services.AddScoped<IBasketRepository, BasketRepository>();
 
         // 3. Services
         builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
@@ -48,9 +50,13 @@ public class Program
         builder.Services.AddScoped<IRestaurantService, RestaurantService>();
         builder.Services.AddScoped<ICharityService, CharityService>();
         builder.Services.AddScoped<IDeliveryPartnerService, DeliveryPartnerService>();
+        builder.Services.AddScoped<IFoodItemService, FoodItemService>();
+        builder.Services.AddScoped<IBasketService, BasketService>();
         builder.Services.AddScoped<IPaymentService, PaymentService>();
         builder.Services.AddScoped<IServiceManager, ServiceManager>();
         builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+        builder.Services.AddAutoMapper(typeof(Servcies.AssemblyRefernce).Assembly);
+
 
         // 4. Controllers
         builder.Services.AddControllers()

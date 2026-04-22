@@ -1,4 +1,5 @@
-﻿using Domain.Contracts;
+﻿using AutoMapper;
+using Domain.Contracts;
 using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Servcies.Abstractions;
@@ -15,6 +16,8 @@ public class ServiceManager : IServiceManager
     private readonly Lazy<ICharityService> _charityService;
     private readonly Lazy<IDeliveryPartnerService> _deliveryService;
     private readonly Lazy<IPaymentService> _paymentService;
+    private readonly Lazy<IFoodItemService> _foodService;
+    private readonly Lazy<IBasketService> _BasketService;
 
     public ServiceManager(
         IUnitOfWork unitOfWork,
@@ -24,7 +27,10 @@ public class ServiceManager : IServiceManager
         IRestaurantRepository restaurantRepo,
         ICharityRepository charityRepo,
         IDeliveryPartnerRepository deliveryRepo,
-        IPaymentRepository paymentRepo)
+        IPaymentRepository paymentRepo,
+        IFoodItemRepository foodItemRepository,
+        IMapper mapper
+        ,IBasketRepository basketRepository)
     {
         _authService = new(() => new AuthenticationService(userManager, jwtTokenService));
         _restaurantService = new(() => new RestaurantService(unitOfWork, restaurantRepo));
@@ -32,6 +38,8 @@ public class ServiceManager : IServiceManager
         _charityService = new(() => new CharityService(unitOfWork, charityRepo));
         _deliveryService = new(() => new DeliveryPartnerService(unitOfWork, deliveryRepo));
         _paymentService = new(() => new PaymentService(unitOfWork, paymentRepo));
+        _foodService = new(() => new FoodItemService(foodItemRepository, restaurantRepo, mapper, unitOfWork));
+        _BasketService = new Lazy<IBasketService>(() => new BasketService(basketRepository, mapper));
     }
 
     public IAuthenticationService AuthenticationService => _authService.Value;
@@ -40,4 +48,8 @@ public class ServiceManager : IServiceManager
     public ICharityService CharityService => _charityService.Value;
     public IDeliveryPartnerService DeliveryPartnerService => _deliveryService.Value;
     public IPaymentService PaymentService => _paymentService.Value;
+
+    public IFoodItemService FoodItemService => _foodService.Value;
+
+    public IBasketService BasketService => _BasketService.Value;
 }

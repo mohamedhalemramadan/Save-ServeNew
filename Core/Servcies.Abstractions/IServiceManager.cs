@@ -10,4 +10,8 @@ public interface IServiceManager
     ICharityService CharityService { get; }
     IDeliveryPartnerService DeliveryPartnerService { get; }
     IPaymentService PaymentService { get; }
+
+    IFoodItemService FoodItemService { get; }
+
+    IBasketService BasketService { get; }
 }

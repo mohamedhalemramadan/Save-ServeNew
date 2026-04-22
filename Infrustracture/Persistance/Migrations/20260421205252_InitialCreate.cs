@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace Persistance.Migrations
 {
     /// <inheritdoc />
@@ -85,7 +87,8 @@ namespace Persistance.Migrations
                     ClosingHours = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Type = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Rating = table.Column<decimal>(type: "decimal(3,2)", nullable: false, defaultValue: 0m),
-                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -130,12 +133,13 @@ namespace Persistance.Migrations
                     RestaurantId = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,3)", nullable: false),
                     ExpiryDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     QuantityAvailable = table.Column<int>(type: "int", nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DiscountPercent = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    DiscountPercent = table.Column<decimal>(type: "decimal(18,3)", nullable: false),
+                    RestaurantId1 = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -152,6 +156,11 @@ namespace Persistance.Migrations
                         principalTable: "Restaurants",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_FoodItems_Restaurants_RestaurantId1",
+                        column: x => x.RestaurantId1,
+                        principalTable: "Restaurants",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -205,6 +214,17 @@ namespace Persistance.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                table: "Categories",
+                columns: new[] { "Id", "Description", "Name" },
+                values: new object[,]
+                {
+                    { 1, "All kinds of pizzas", "Pizza" },
+                    { 2, "Beef, chicken and veggie burgers", "Burger" },
+                    { 3, "Cold and hot beverages", "Drinks" },
+                    { 4, "Sweets and cakes", "Desserts" }
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_FoodItems_CategoryId",
                 table: "FoodItems",
@@ -214,6 +234,11 @@ namespace Persistance.Migrations
                 name: "IX_FoodItems_RestaurantId",
                 table: "FoodItems",
                 column: "RestaurantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FoodItems_RestaurantId1",
+                table: "FoodItems",
+                column: "RestaurantId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_FoodOrders_FoodItemId",

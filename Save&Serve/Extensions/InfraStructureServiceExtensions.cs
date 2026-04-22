@@ -1,6 +1,4 @@
-﻿using System.Security.Claims;
-using System.Text;
-using Domain.Contracts;
+﻿using Domain.Contracts;
 using Domain.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -10,6 +8,9 @@ using Persistance;
 using Persistance.Dates;
 using Persistance.Identity;
 using Persistance.Repositories;
+using StackExchange.Redis;
+using System.Security.Claims;
+using System.Text;
 
 namespace E_Commerce.Extensions;
 
@@ -27,6 +28,8 @@ public static class InfraStructureServiceExtensions
 
         services.AddDbContext<StoreIdentityContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("IdentityConnection")));
+        services.AddSingleton<IConnectionMultiplexer>(
+               _ => ConnectionMultiplexer.Connect(configuration.GetConnectionString("Redis")!));
 
         // ✅ JWT الأول عشان يكون هو الـ default scheme
         services.AddAuthentication(options =>

@@ -12,7 +12,7 @@ using Persistance.Dates;
 namespace Persistance.Migrations
 {
     [DbContext(typeof(StoreDBContext))]
-    [Migration("20260420163523_InitialCreate")]
+    [Migration("20260421205252_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -44,6 +44,32 @@ namespace Persistance.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "All kinds of pizzas",
+                            Name = "Pizza"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Beef, chicken and veggie burgers",
+                            Name = "Burger"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Cold and hot beverages",
+                            Name = "Drinks"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "Sweets and cakes",
+                            Name = "Desserts"
+                        });
                 });
 
             modelBuilder.Entity("Domain.Entities.Charity", b =>
@@ -166,7 +192,7 @@ namespace Persistance.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("DiscountPercent")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(18,3)");
 
                     b.Property<DateTime>("ExpiryDate")
                         .HasColumnType("datetime2");
@@ -176,12 +202,15 @@ namespace Persistance.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(18,3)");
 
                     b.Property<int>("QuantityAvailable")
                         .HasColumnType("int");
 
                     b.Property<int>("RestaurantId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("RestaurantId1")
                         .HasColumnType("int");
 
                     b.Property<string>("Status")
@@ -193,6 +222,8 @@ namespace Persistance.Migrations
                     b.HasIndex("CategoryId");
 
                     b.HasIndex("RestaurantId");
+
+                    b.HasIndex("RestaurantId1");
 
                     b.ToTable("FoodItems");
                 });
@@ -324,6 +355,10 @@ namespace Persistance.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("OpeningHours")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -351,16 +386,20 @@ namespace Persistance.Migrations
             modelBuilder.Entity("Domain.Entities.FoodItem", b =>
                 {
                     b.HasOne("Domain.Entities.Category", "Category")
-                        .WithMany("FoodItems")
+                        .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.Restaurant", "Restaurant")
-                        .WithMany("FoodItems")
+                        .WithMany()
                         .HasForeignKey("RestaurantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Domain.Entities.Restaurant", null)
+                        .WithMany("FoodItems")
+                        .HasForeignKey("RestaurantId1");
 
                     b.Navigation("Category");
 
@@ -370,7 +409,7 @@ namespace Persistance.Migrations
             modelBuilder.Entity("Domain.Entities.FoodOrder", b =>
                 {
                     b.HasOne("Domain.Entities.FoodItem", "FoodItem")
-                        .WithMany("FoodOrders")
+                        .WithMany()
                         .HasForeignKey("FoodItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -412,11 +451,6 @@ namespace Persistance.Migrations
                     b.Navigation("Order");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Category", b =>
-                {
-                    b.Navigation("FoodItems");
-                });
-
             modelBuilder.Entity("Domain.Entities.Charity", b =>
                 {
                     b.Navigation("Orders");
@@ -425,11 +459,6 @@ namespace Persistance.Migrations
             modelBuilder.Entity("Domain.Entities.Consumer", b =>
                 {
                     b.Navigation("Orders");
-                });
-
-            modelBuilder.Entity("Domain.Entities.FoodItem", b =>
-                {
-                    b.Navigation("FoodOrders");
                 });
 
             modelBuilder.Entity("Domain.Entities.Restaurant", b =>
