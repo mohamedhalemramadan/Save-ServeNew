@@ -18,6 +18,7 @@ public class ServiceManager : IServiceManager
     private readonly Lazy<IPaymentService> _paymentService;
     private readonly Lazy<IFoodItemService> _foodService;
     private readonly Lazy<IBasketService> _BasketService;
+    private readonly Lazy<IOrderService> _orderService;
 
     public ServiceManager(
         IUnitOfWork unitOfWork,
@@ -30,7 +31,8 @@ public class ServiceManager : IServiceManager
         IPaymentRepository paymentRepo,
         IFoodItemRepository foodItemRepository,
         IMapper mapper
-        ,IBasketRepository basketRepository)
+        , IBasketRepository basketRepository,
+        IOrderService orderService)
     {
         _authService = new(() => new AuthenticationService(userManager, jwtTokenService));
         _restaurantService = new(() => new RestaurantService(unitOfWork, restaurantRepo));
@@ -40,6 +42,7 @@ public class ServiceManager : IServiceManager
         _paymentService = new(() => new PaymentService(unitOfWork, paymentRepo));
         _foodService = new(() => new FoodItemService(foodItemRepository, restaurantRepo, mapper, unitOfWork));
         _BasketService = new Lazy<IBasketService>(() => new BasketService(basketRepository, mapper));
+        _orderService = new Lazy<IOrderService>(() => new OrderService(mapper, unitOfWork, basketRepository));
     }
 
     public IAuthenticationService AuthenticationService => _authService.Value;
@@ -52,4 +55,6 @@ public class ServiceManager : IServiceManager
     public IFoodItemService FoodItemService => _foodService.Value;
 
     public IBasketService BasketService => _BasketService.Value;
+
+    public IOrderService OrderService => _orderService.Value;
 }

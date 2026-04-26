@@ -21,9 +21,9 @@ public class CharityConfiguration : IEntityTypeConfiguration<Charity>
         //    .HasForeignKey<Charity>(c => c.UserId)
         //    .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasMany(c => c.Orders)
-            .WithOne()
-            .HasForeignKey(o => o.CharityId)
-            .OnDelete(DeleteBehavior.SetNull);
+        //builder.HasMany(c => c.Orders)
+        //    .WithOne()
+        //    .HasForeignKey(o => o.CharityId)
+        //    .OnDelete(DeleteBehavior.SetNull);
     }
 }

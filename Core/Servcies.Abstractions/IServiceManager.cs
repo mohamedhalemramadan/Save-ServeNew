@@ -14,4 +14,6 @@ public interface IServiceManager
     IFoodItemService FoodItemService { get; }
 
     IBasketService BasketService { get; }
+
+    IOrderService OrderService { get; }
 }

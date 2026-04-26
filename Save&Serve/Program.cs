@@ -2,7 +2,7 @@
 using Domain.Entities;
 using E_Commerce.Extensions;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authentication.JwtBearer; 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 using Persistance;
 using Persistance.Repositories;
@@ -26,7 +26,7 @@ public class Program
         // 1. Infrastructure (DB + Identity + JWT)
         builder.Services.AddInfraStructureServices(builder.Configuration);
 
-       
+
         builder.Services.AddAuthentication(options =>
         {
             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -40,11 +40,12 @@ public class Program
         builder.Services.AddScoped<ICharityRepository, CharityRepository>();
         builder.Services.AddScoped<IDeliveryPartnerRepository, DeliveryPartnerRepository>();
         builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
-        builder.Services.AddScoped<IFoodItemRepository ,FoodItemRepository>();
+        builder.Services.AddScoped<IFoodItemRepository, FoodItemRepository>();
         builder.Services.AddScoped<IBasketRepository, BasketRepository>();
 
         // 3. Services
         builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
+        builder.Services.AddScoped<IOrderService, OrderService>();
         builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
         builder.Services.AddScoped<IConsumerService, ConsumerService>();
         builder.Services.AddScoped<IRestaurantService, RestaurantService>();
@@ -104,13 +105,13 @@ public class Program
             {
                 var initializer = services.GetRequiredService<IDbInitializer>();
 
-               
+
                 await initializer.InitializeAsync();
 
-                
+
                 await initializer.InitializeIdentityAsync();
 
-                
+
                 // await app.SeedDbAsync(); 
             }
             catch (Exception ex)
@@ -127,7 +128,7 @@ public class Program
             app.UseSwaggerUI();
         }
 
-        
+
         app.UseRouting();
 
         app.UseCors("AllowFrontend");

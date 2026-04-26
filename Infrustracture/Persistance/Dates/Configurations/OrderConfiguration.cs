@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.Entities.OrderEntities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -8,22 +9,17 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
 {
     public void Configure(EntityTypeBuilder<Order> builder)
     {
-        builder.ToTable("Orders");
-        builder.HasKey(o => o.Id);
+        //  ShippingDetails
+        builder.OwnsOne(order => order.ShippingDetails, Address => Address.WithOwner());
 
-        builder.Property(o => o.TotalAmount).HasColumnType("decimal(10,2)");
-        builder.Property(o => o.Status).IsRequired().HasMaxLength(20).HasDefaultValue("Pending");
-        builder.Property(o => o.Type).IsRequired().HasMaxLength(20);
-        builder.Property(o => o.DeliveryAddress).HasMaxLength(300);
+        // OrderItem
+        builder.HasMany(order => order.Items).WithOne();
+        builder.HasMany(o => o.Items)
+            .WithOne()
+            .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasOne(o => o.Consumer)
-               .WithMany(c => c.Orders)
-               .HasForeignKey(o => o.ConsumerId)
-               .OnDelete(DeleteBehavior.NoAction);
-
-        builder.HasOne<Charity>()
-               .WithMany(c => c.Orders)
-               .HasForeignKey(o => o.CharityId)
-               .OnDelete(DeleteBehavior.NoAction);
+        //  SubTotal
+        builder.Property(o => o.TotalPrice)
+            .HasColumnType("decimal(18,3)");
     }
 }

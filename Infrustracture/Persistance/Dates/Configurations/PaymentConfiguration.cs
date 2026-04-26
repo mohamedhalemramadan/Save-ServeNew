@@ -20,9 +20,9 @@ public class PaymentConfiguration : IEntityTypeConfiguration<Payment>
         builder.Property(p => p.Method).IsRequired().HasMaxLength(20);
         builder.Property(p => p.Date).HasDefaultValueSql("GETUTCDATE()");
 
-        builder.HasOne(p => p.Order)
-            .WithOne()
-            .HasForeignKey<Payment>(p => p.OrderId)
-            .OnDelete(DeleteBehavior.Cascade);
+        //builder.HasOne(p => p.Order)
+        //    .WithOne()
+        //    .HasForeignKey<Payment>(p => p.OrderId)
+        //    .OnDelete(DeleteBehavior.Cascade);
     }
 }

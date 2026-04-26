@@ -21,9 +21,9 @@ public class ConsumerConfigurations : IEntityTypeConfiguration<Consumer>
         //    .HasForeignKey<Consumer>(c => c.UserId)
         //    .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasMany(c => c.Orders)
-            .WithOne(o => o.Consumer)
-            .HasForeignKey(o => o.ConsumerId)
-            .OnDelete(DeleteBehavior.SetNull);
+        //builder.HasMany(c => c.Orders)
+        //    .WithOne(o => o.Consumer)
+        //    .HasForeignKey(o => o.ConsumerId)
+        //    .OnDelete(DeleteBehavior.SetNull);
     }
 }
