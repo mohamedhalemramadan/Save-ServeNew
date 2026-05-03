@@ -1,5 +1,6 @@
 ﻿using Domain.Contracts;
 using Domain.Entities;
+using Microsoft.Extensions.Caching.Memory;
 using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
@@ -10,28 +11,40 @@ using System.Threading.Tasks;
 
 namespace Persistance.Repositories
 {
-    public class BasketRepository(IConnectionMultiplexer connectionMultiplexer) :
-         IBasketRepository
+ 
+
+    public class BasketRepository : IBasketRepository
     {
-        private readonly StackExchange.Redis.IDatabase _database = connectionMultiplexer.GetDatabase();
+        private readonly IMemoryCache _cache;
+
+        public BasketRepository(IMemoryCache cache)
+        {
+            _cache = cache;
+        }
 
         public Task<bool> DeleteBasketAsync(string id)
-       => _database.KeyDeleteAsync(id);
-
-        public async Task<CustomerBasket?> GetBasketAsync(string id)
         {
-            var value = await _database.StringGetAsync(id);
-            if (value.IsNullOrEmpty) return null;
-            return JsonSerializer.Deserialize<CustomerBasket>(value);
+            _cache.Remove(id);
+            return Task.FromResult(true);
         }
 
-        public async Task<CustomerBasket?> UpdateBasketAsync(CustomerBasket basket, TimeSpan? timeToLive = null)
+        public Task<CustomerBasket?> GetBasketAsync(string id)
         {
-            var jsonBasket = JsonSerializer.Serialize(basket);
-            var isCreatedOrUpdated = await _database
-               .StringSetAsync(basket.Id, jsonBasket, timeToLive ?? TimeSpan.FromDays(30));
-            return isCreatedOrUpdated ? await GetBasketAsync(basket.Id) : null;
+            _cache.TryGetValue(id, out CustomerBasket? basket);
+            return Task.FromResult(basket);
+        }
 
+        public Task<CustomerBasket?> UpdateBasketAsync(CustomerBasket basket, TimeSpan? timeToLive = null)
+        {
+            var options = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = timeToLive ?? TimeSpan.FromDays(30)
+            };
+
+            _cache.Set(basket.Id, basket, options);
+            return Task.FromResult<CustomerBasket?>(basket);
         }
     }
+
+
 }

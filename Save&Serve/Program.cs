@@ -42,7 +42,7 @@ public class Program
         builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
         builder.Services.AddScoped<IFoodItemRepository, FoodItemRepository>();
         builder.Services.AddScoped<IBasketRepository, BasketRepository>();
-
+        builder.Services.AddMemoryCache();
         // 3. Services
         builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
         builder.Services.AddScoped<IOrderService, OrderService>();
